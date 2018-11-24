@@ -9,6 +9,7 @@ class Agent(object):
         self.middleName = ""
         self.lastName = ""
         self.id = 0
+        self.volume = ""
 
     def setNames(self, arg):
         if len(arg) == 2:
@@ -32,8 +33,11 @@ class Agent(object):
 
         self.id = arg
 
+    def setVolume(self, arg):
+        self.volume = arg[0][2:]
+
     def __str__(self):
-        return "{} {} {} {}".format(self.firstName, self.middleName, self.lastName, self.id)
+        return "{} {} {} {}".format(self.firstName, self.middleName, self.lastName, self.volume, self.id)
 
 
 def main():
@@ -46,9 +50,10 @@ def main():
 
         for page in range(pdf.getNumPages()):
             contents += pdf.getPage(page).extractText()
-
+        
         agentList = re.findall(r"(([A-z,\",',\.]+ )+([A-z,\",',\.])+ \(\d+\))", contents)
-        for item in agentList:
+        volume = re.findall("((\.\d+)(,\d{3})+)", contents)
+        for idx, item in enumerate(agentList):
             newAgent = Agent()
 
             names = re.findall(r"([A-z,\",',\.]+)", item[0])
@@ -56,9 +61,9 @@ def main():
 
             newAgent.setNames(names)
             newAgent.setId(id[0])
+            newAgent.setVolume(volume[idx])
 
             print(newAgent)
-        # print(asdf)
 
 
 
